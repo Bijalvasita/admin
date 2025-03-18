@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+    <base href="$FLUTTER_BASE_HREF">
+  -->
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="click_counter">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>click_counter</title>
+  <link rel="manifest" href="manifest.json">
+
+  <script>
+    // The value below is injected by flutter build, do not touch.
+    const serviceWorkerVersion = null;
+  </script>
+  <!-- This script adds the flutter initialization JS code -->
+  <script src="flutter.js" defer></script>
+</head>
+<body><!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Flutter App</title>
+
+  <!-- Update Firebase SDK initialization if needed -->
+  <script defer src="/__/firebase/10.14.0/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.14.0/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.14.0/firebase-database-compat.js"></script>
+  <script defer src="/__/firebase/10.14.0/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/10.14.0/firebase-functions-compat.js"></script>
+  <script defer src="/__/firebase/10.14.0/firebase-messaging-compat.js"></script>
+  <script defer src="/__/firebase/10.14.0/firebase-storage-compat.js"></script>
+  <script defer src="/__/firebase/10.14.0/firebase-analytics-compat.js"></script>
+  <script defer src="/__/firebase/10.14.0/firebase-remote-config-compat.js"></script>
+  <script defer src="/__/firebase/10.14.0/firebase-performance-compat.js"></script>
+  <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+
+  <style>
+    body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+  </style>
+</head>
+
+<body>
+<p>Firebase SDK Loading&hellip;</p>
+
+<script>
+  // Initialize Firebase features
+  document.addEventListener('DOMContentLoaded', function() {
+    const loadEl = document.querySelector('p');
+
+    try {
+      let app = firebase.app();
+      let features = [
+        'auth',
+        'database',
+        'firestore',
+        'functions',
+        'messaging',
+        'storage',
+        'analytics',
+        'remoteConfig',
+        'performance',
+      ].filter(feature => typeof app[feature] === 'function');
+      loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
+    } catch (e) {
+      console.error(e);
+      loadEl.textContent = 'Error loading Firebase SDK, check console.';
+    }
+  });
+</script>
+
+<!-- Flutter Service Worker Setup -->
+<script>
+  var serviceWorkerVersion = "{{flutter_service_worker_version}}";
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/flutter_service_worker.js?v=' + serviceWorkerVersion);
+    });
+  }
+</script>
+
+<!-- FlutterLoader initialization -->
+<script>
+  window.addEventListener('load', function() {
+    FlutterLoader.load({
+      entrypointUrl: 'main.dart.js',
+    }).then(function(engine) {
+      engine.run();
+    });
+  });
+</script>
+
+</body>
+</html>
+
+<script>
+    window.addEventListener('load', function(ev) {
+      // Download main.dart.js
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            appRunner.runApp();
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

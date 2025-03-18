@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1071652904865",
+    "firebase_url": "https://demoapp-c337e-default-rtdb.firebaseio.com",
+    "project_id": "demoapp-c337e",
+    "storage_bucket": "demoapp-c337e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1071652904865:android:5258c9afa0da6e3de135e0",
+        "android_client_info": {
+          "package_name": "com.example.admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrZCOUS8OgTRwj6je-Cdqk7PWG7od1iAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

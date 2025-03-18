@@ -1,0 +1,65 @@
+name: flutter_navigation_drawer
+description: A Flutter project with a navigation drawer and live location feature.
+
+publish_to: 'none' # Remove this line if you want to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.0 <4.0.0" # Updated to allow for Dart SDK 3.x.x
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_localizations:
+    sdk: flutter # Ensure this line is uncommented for localization support
+  geolocator: ^9.0.2
+  permission_handler: ^11.1.0
+  file_picker: ^8.0.5
+  excel: ^4.0.6
+  http: ^1.2.0
+  provider: ^6.1.2
+  cupertino_icons: ^1.0.8
+  validatorless: ^1.2.3
+  flutter_custom_clippers: ^2.1.0
+  intl: ^0.19.0 # Updated to match the requirement
+  intl_utils: ^2.8.7
+  firebase_core: ^3.4.0
+  firebase_auth: ^5.2.0
+  form_field_validator: ^1.1.0
+  font_awesome_flutter: ^10.7.0
+  flutter_vector_icons: ^2.0.0
+  flutter_screenutil: ^5.9.3
+  google_maps_flutter: ^2.5.3
+  image_picker: ^1.0.8
+  intl_translation: ^0.20.0 # Updated to the latest version supporting null safety
+  cloud_firestore: ^5.4.4
+  geocoding: ^2.0.0
+  firebase_storage: ^12.3.3
+  csv2json: ^0.0.3
+  csv: ^5.0.0
+  path_provider: ^2.1.5
+  fluttertoast: ^8.2.10
+  #flutter_pdfview: ^1.4.0
+  syncfusion_flutter_pdfviewer: ^28.1.37
+  url_launcher: ^6.3.1
+  open_file: ^3.5.10
+  fl_chart: ^0.70.2
+ # flutter_localizations_json_gen: ^1.0.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.9
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logo-filled.png
+  generate: true # Include this to indicate that code generation is enabled
+
+# This section is crucial for localization
+l10n:
+  simple_arb: true # Enable simple ARB for localization
+  use_deferred_loading: false # Set to true if you want to load the localization on demand
