@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 import 'ExecutiveManagementScreen.dart';
 import 'PaymentReminderScreen.dart';
@@ -16,46 +15,40 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
-  int _activeUsers = 10;
-  int _inactiveUsers = 5;
-  int _totalExecutives = 15;
+  int _totalExecutives = 0;
+  List<Map<String, dynamic>> _executiveList = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchUserStatus();
+    _fetchExecutiveData();
   }
 
-  Future<void> _fetchUserStatus() async {
+  // ✅ Fetch Executives from Firestore
+  Future<void> _fetchExecutiveData() async {
     try {
       final snapshot =
-      await FirebaseFirestore.instance.collection('users').get();
-
-      int activeCount = 0;
-      int inactiveCount = 0;
-
-      for (var doc in snapshot.docs) {
-        final data = doc.data();
-        if (data['status'] == 'active') {
-          activeCount++;
-        } else if (data['status'] == 'inactive') {
-          inactiveCount++;
-        }
-      }
+          await FirebaseFirestore.instance.collection('executives').get();
 
       setState(() {
-        _activeUsers = snapshot.docs.isEmpty ? 10 : activeCount;
-        _inactiveUsers = snapshot.docs.isEmpty ? 5 : inactiveCount;
-        _totalExecutives = snapshot.docs.isEmpty ? 15 : snapshot.docs.length;
+        _totalExecutives = snapshot.docs.length;
+        _executiveList = snapshot.docs
+            .map((doc) => {
+                  "id": doc.id,
+                  "name": doc["name"] ?? "No Name",
+                  "email": doc["email"] ?? "No Email",
+                })
+            .toList();
       });
     } catch (e) {
-      print('Error fetching user data: $e');
-      setState(() {
-        _activeUsers = 10;
-        _inactiveUsers = 5;
-        _totalExecutives = 15;
-      });
+      print('Error fetching executives: $e');
     }
+  }
+
+  // ✅ Delete Executive from Firestore
+  Future<void> _deleteExecutive(String id) async {
+    await FirebaseFirestore.instance.collection('executives').doc(id).delete();
+    _fetchExecutiveData();
   }
 
   static final List<Widget> _widgetOptions = <Widget>[
@@ -155,16 +148,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           : _widgetOptions[_selectedIndex],
       floatingActionButton: _selectedIndex == 0
           ? FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PaymentReminderScreen()),
-          );
-        },
-        backgroundColor: Colors.orange,
-        child: Icon(Icons.add),
-      )
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PaymentReminderScreen()),
+                );
+              },
+              backgroundColor: Colors.orange,
+              child: Icon(Icons.add),
+            )
           : null,
     );
   }
@@ -176,54 +169,48 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Dashboard Overview',
+            'Executives List',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
           Expanded(
-            child: _buildPieChart(),
+            child: _executiveList.isEmpty
+                ? Center(child: Text("No executives found"))
+                : ListView.builder(
+                    itemCount: _executiveList.length,
+                    itemBuilder: (context, index) {
+                      var executive = _executiveList[index];
+                      return Card(
+                        elevation: 2,
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          title: Text(executive['name'],
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                          subtitle: Text(executive['email']),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.edit, color: Colors.grey),
+                                onPressed: () {
+                                  // Implement Edit Functionality
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete, color: Colors.red),
+                                onPressed: () =>
+                                    _deleteExecutive(executive['id']),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
     );
-  }
-
-  Widget _buildPieChart() {
-    return AspectRatio(
-      aspectRatio: 1.3,
-      child: PieChart(
-        PieChartData(
-          sections: _chartSections(),
-          centerSpaceRadius: 50,
-          sectionsSpace: 2,
-        ),
-      ),
-    );
-  }
-
-  List<PieChartSectionData> _chartSections() {
-    return [
-      PieChartSectionData(
-        color: Colors.green,
-        value: _activeUsers.toDouble(),
-        title: 'Active\n$_activeUsers',
-        radius: 60,
-        titleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-      ),
-      PieChartSectionData(
-        color: Colors.red,
-        value: _inactiveUsers.toDouble(),
-        title: 'Inactive\n$_inactiveUsers',
-        radius: 60,
-        titleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-      ),
-      PieChartSectionData(
-        color: Colors.blue,
-        value: _totalExecutives.toDouble(),
-        title: 'Total\n$_totalExecutives',
-        radius: 60,
-        titleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-      ),
-    ];
   }
 }
