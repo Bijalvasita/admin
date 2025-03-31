@@ -1,11 +1,14 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_navigation_drawer/models/case.dart';
+import 'package:flutter_navigation_drawer/services/firestore.dart';
 
 class UploadScreen extends StatefulWidget {
   const UploadScreen({Key? key}) : super(key: key);
@@ -71,15 +74,18 @@ class _UploadScreenState extends State<UploadScreen> {
     }
 
     try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        await FirebaseAuth.instance.signInAnonymously();
-      }
+      //TODO: uncomment this when you want to use firebase auth
+      // User? user = FirebaseAuth.instance.currentUser;
+      // if (user == null) {
+      //   await FirebaseAuth.instance.signInAnonymously();
+      // }
 
+      log('Uploading file... start');
       Reference storageReference = FirebaseStorage.instance
           .ref()
           .child('executive_uploads/$_selectedExecutive/$_fileName');
       _uploadTask = storageReference.putData(_fileBytes!);
+      log('Uploading file... end');
 
       _uploadTask!.snapshotEvents.listen((TaskSnapshot snapshot) {
         setState(() {
@@ -91,6 +97,8 @@ class _UploadScreenState extends State<UploadScreen> {
       });
 
       await _uploadTask;
+      log('Upload complete!');
+      log('File URL: ${storageReference.getDownloadURL()}');
       String downloadUrl = await storageReference.getDownloadURL();
       await FirebaseFirestore.instance.collection('executive_uploads').add({
         'executiveId': _selectedExecutive,
@@ -99,12 +107,15 @@ class _UploadScreenState extends State<UploadScreen> {
         'uploadedAt': Timestamp.now(),
       });
 
+      log('File uploaded successfully! URL: $downloadUrl');
       _showDialog('Success', 'File uploaded successfully!');
+      _uploadCasesToFirestore(_fileBytes!);
       setState(() {
         _uploadTask = null;
         _progress = 0.0;
       });
     } catch (e) {
+      log(e.toString());
       _showDialog('Upload Error',
           'An error occurred while uploading. Please try again later.');
     }
@@ -179,5 +190,17 @@ class _UploadScreenState extends State<UploadScreen> {
         ),
       ),
     );
+  }
+
+  Future _uploadCasesToFirestore(Uint8List uint8list) async {
+    String csvString = utf8.decode(uint8list);
+
+    List<List<dynamic>> csvData = const CsvToListConverter().convert(csvString);
+
+    List<Case> cases = csvData
+        .skip(1)
+        .map((row) => Case.fromCsv(row, _selectedExecutive!))
+        .toList();
+    await Firestore.instance.uploadCases(cases);
   }
 }

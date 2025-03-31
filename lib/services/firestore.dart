@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_navigation_drawer/constants/firestore.dart';
+import 'package:flutter_navigation_drawer/models/case.dart';
 import 'package:flutter_navigation_drawer/models/feedback.dart';
 
 class Firestore {
@@ -43,6 +44,21 @@ class Firestore {
     } catch (e) {
       log("Error fetching data: $e");
       return [];
+    }
+  }
+
+  Future<void> uploadCases(List<Case> cases) async {
+    try {
+      final firestore = FirebaseFirestore.instance;
+
+      for (final caseModel in cases) {
+        final docRef =
+            firestore.collection(FirestoreConstants.casesCollection).doc();
+        caseModel.id = docRef.id;
+        await docRef.set(caseModel.toJson());
+      }
+    } catch (e) {
+      log("Error uploading cases: $e");
     }
   }
 }
