@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_navigation_drawer/screens/view_feedbacks_screen.dart';
 
 import 'ExecutiveManagementScreen.dart';
 import 'PaymentReminderScreen.dart';
@@ -62,6 +63,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ExecutiveManagementScreen(key: PageStorageKey('Executive')),
     UploadScreen(key: PageStorageKey('UploadScreen')),
     SettingsScreen(key: PageStorageKey('SettingsScreen')),
+    ViewFeedbacksScreen(key: PageStorageKey('SettingsScreen')),
   ];
 
   final List<String> _appBarTitles = [
@@ -70,6 +72,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     'Executive Management',
     'Upload',
     'Settings',
+    "View Feedbacks",
   ];
 
   void _onItemTapped(int index) {
@@ -139,6 +142,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               leading: Icon(Icons.settings),
               title: Text('Settings'),
               onTap: () => _onItemTapped(4),
+            ),
+            ListTile(
+              leading: Icon(Icons.feedback),
+              title: Text('View Feedbacks'),
+              onTap: () => _onItemTapped(5),
             ),
           ],
         ),

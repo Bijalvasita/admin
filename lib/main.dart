@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_navigation_drawer/screens/dashboard_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
@@ -60,8 +61,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue, // Use your theme
             // You can customize other theme properties here
           ),
-          home:
-              const SplashScreen(), // Ensure SplashScreen is defined correctly
+          home: DashboardScreen(), // Ensure SplashScreen is defined correctly
         );
       },
     );

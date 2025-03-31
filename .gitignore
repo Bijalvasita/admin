@@ -67,3 +67,12 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+.dart_tool
+.dart_tool\package_config.json
+.flutter-plugins
+.flutter-plugins-dependencies
+.dart_tool/package_config.json
+build
+build/flutter_assets
+android/local.properties
