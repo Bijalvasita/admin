@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_navigation_drawer/models/case.dart';
@@ -74,11 +75,10 @@ class _UploadScreenState extends State<UploadScreen> {
     }
 
     try {
-      //TODO: uncomment this when you want to use firebase auth
-      // User? user = FirebaseAuth.instance.currentUser;
-      // if (user == null) {
-      //   await FirebaseAuth.instance.signInAnonymously();
-      // }
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        await FirebaseAuth.instance.signInAnonymously();
+      }
 
       log('Uploading file... start');
       Reference storageReference = FirebaseStorage.instance
