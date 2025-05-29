@@ -31,6 +31,7 @@ class _ExecutiveManagementScreenState extends State<ExecutiveManagementScreen> {
         'name': _nameController.text,
         'email': _emailController.text,
         'uid': userCredential.user!.uid,
+        'isAdmin': false, // Default to false for executives
       });
 
       _showDialog("Success", "Executive added successfully!");
