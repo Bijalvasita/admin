@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_navigation_drawer/screens/view_feedbacks_screen.dart';
+import 'login_screen.dart';
 
 import 'ExecutiveManagementScreen.dart';
 import 'PaymentReminderScreen.dart';
@@ -82,6 +84,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
     Navigator.pop(context);
   }
 
+  Future<void> _handleLogout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      print('Error during logout: $e');
+      // Show error message if logout fails
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to logout. Please try again.')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,6 +169,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               leading: Icon(Icons.feedback),
               title: Text('View Feedbacks'),
               onTap: () => _onItemTapped(5),
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: () => _handleLogout(context),
             ),
           ],
         ),

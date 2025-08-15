@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +21,32 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false; // To toggle password visibility
+  bool _isLoading = false; // To track loading state
 
   Future<void> checkCredentials() async {
+    if (_isLoading) return; // Prevent multiple calls while loading
+    
+    setState(() {
+      _isLoading = true;
+    });
+    
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
       if (credential.user != null) {
+        // Check if the user is an admin in the executives collection
+        final userDoc = await FirebaseFirestore.instance
+            .collection('executives')
+            .doc(credential.user!.uid)
+            .get();
+
+        if (!userDoc.exists || !userDoc.data()?['isAdmin']) {
+          showErrorDialog("Access denied. Only admins can login to this portal.");
+          return;
+        }
+
         if (mounted) {
           Navigator.pushAndRemoveUntil(
             context,
@@ -47,6 +66,12 @@ class _LoginScreenState extends State<LoginScreen> {
         default:
           showErrorDialog("Something Went Wrong.");
           break;
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -93,7 +118,8 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: EdgeInsets.only(bottom: 30.h),
         child: Column(
           children: <Widget>[
-            const HeaderContainer(),
+            const HeaderContainer(
+            ),
             Expanded(
               flex: 1,
               child: Container(
@@ -232,9 +258,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const Spacer(),
-                    ElevatedButton(
-                      onPressed: () {
-                        checkCredentials(); // Call to check user credentials
+                    _isLoading ? Center(child: CircularProgressIndicator(),)
+:                    ElevatedButton(
+                      onPressed: () async {
+                        // setState(() {
+                        //   _isLoading = true;
+                        // });
+                        await checkCredentials(); // Call to check user credentials
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: maroonColor,

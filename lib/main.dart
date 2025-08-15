@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue, // Use your theme
             // You can customize other theme properties here
           ),
-          home: DashboardScreen(), // Ensure SplashScreen is defined correctly
+          home: SplashScreen(), // Ensure SplashScreen is defined correctly
         );
       },
     );
